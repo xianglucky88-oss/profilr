@@ -1,0 +1,13 @@
+id,amount,ratio,country,note,always_null
+1,10.5,0.5,US,ok,
+2,,0.7,US,,
+3,null,0.9,CA,null,
+4,12.1,not_a_number,US,hello,
+5,1e309,0.1,US,42,
+6,-7.25,0.2,,world,
+7,8,0.3,CA,n/a,
+8,N/A,0.4,US,text,
+9,11.5,0.6,US,999,
+10,9.9,0.8,CA,hello,
+11,1000000.5,0.11,US,hello,
+12,10.1,0.12,US,hello,

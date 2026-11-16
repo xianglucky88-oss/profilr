@@ -6,14 +6,23 @@ import math
 
 
 def absolute_drift(baseline: dict, current: dict) -> list[dict]:
-    """Initial implementation: compare missing rates by absolute difference."""
+    """Compare missing rates; surface column-set changes as schema alerts."""
     alerts = []
-    for field, before in baseline.get("fields", {}).items():
-        after = current.get("fields", {}).get(field)
-        if not after:
+    before_fields = baseline.get("fields", {})
+    after_fields = current.get("fields", {})
+    for field, before in before_fields.items():
+        after = after_fields.get(field)
+        if after is None or after.get("status") == "dropped":
+            alerts.append({"field": field, "metric": "schema", "delta": 1.0})
             continue
-        delta = abs(after["missing_rate"] - before["missing_rate"])
-        alerts.append({"field": field, "metric": "missing_rate", "delta": delta})
+        before_rate = before.get("missing_rate")
+        after_rate = after.get("missing_rate")
+        if before_rate is None or after_rate is None:
+            continue
+        alerts.append({"field": field, "metric": "missing_rate", "delta": abs(after_rate - before_rate)})
+    for field in after_fields:
+        if field not in before_fields:
+            alerts.append({"field": field, "metric": "schema", "delta": 1.0})
     return alerts
 
 
